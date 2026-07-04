@@ -13,20 +13,33 @@ const techStack = [
   "AI-Powered Apps",
 ];
 
+const socialLinks = [
+  { href: "#", label: "GitHub", icon: FaGithub },
+  { href: "#", label: "LinkedIn", icon: FaLinkedin },
+  {
+    href: "mailto:your-email@example.com",
+    label: "Email",
+    icon: Mail,
+  },
+];
+
+const floatingBadges = [
+  { label: "React", className: "-left-4 top-8 md:-left-8" },
+  { label: "TS", className: "-right-2 top-16 md:-right-6" },
+  { label: "Node", className: "bottom-12 -left-2 md:-left-6" },
+];
+
 const Hero = () => {
   return (
-    <section
-      id="home"
-      className="relative flex min-h-screen items-center overflow-hidden px-6 pt-20"
-    >
+    <section id="home" className="relative min-h-screen overflow-hidden px-6 pt-20">
       <HeroBackground />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 md:grid-cols-2">
+      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-12 md:grid-cols-2 md:gap-8 lg:gap-12">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
-          className="space-y-6"
+          className="relative space-y-6"
         >
           <Badge
             variant="outline"
@@ -61,25 +74,14 @@ const Hero = () => {
           </p>
 
           <div className="flex items-center gap-4">
-            {[
-              { href: "#", label: "GitHub", icon: FaGithub },
-              { href: "#", label: "LinkedIn", icon: FaLinkedin },
-              {
-                href: "mailto:your-email@example.com",
-                label: "Email",
-                icon: Mail,
-              },
-            ].map(({ href, label, icon: Icon }) => (
+            {socialLinks.map(({ href, label, icon: Icon }) => (
               <a
                 key={label}
                 href={href}
                 aria-label={label}
                 className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800/80 bg-zinc-950/50 text-zinc-400 backdrop-blur-md transition hover:border-zinc-500 hover:text-white"
               >
-                <Icon
-                  size={18}
-                  className="transition group-hover:scale-110"
-                />
+                <Icon size={18} className="transition group-hover:scale-110" />
               </a>
             ))}
           </div>
@@ -105,29 +107,30 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex justify-center md:justify-end"
         >
-          <div className="relative">
-            {/* Rotating gradient ring */}
+          <div className="relative shrink-0">
             <motion.div
-              className="absolute -inset-1 rounded-full opacity-70"
+              className="absolute -inset-1 rounded-full opacity-60"
               style={{
                 background:
-                  "conic-gradient(from 0deg, transparent, rgba(16,185,129,0.5), transparent, rgba(56,189,248,0.4), transparent)",
+                  "conic-gradient(from 0deg, transparent, rgba(16,185,129,0.35), transparent, rgba(255,255,255,0.22), transparent)",
               }}
               animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             />
 
-            {/* Glow pulse */}
             <motion.div
-              className="absolute -inset-4 rounded-full bg-emerald-500/20 blur-2xl"
-              animate={{ opacity: [0.3, 0.6, 0.3], scale: [0.95, 1.05, 0.95] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-4 rounded-full bg-emerald-500/15 blur-2xl"
+              animate={{
+                opacity: [0.25, 0.45, 0.25],
+                scale: [0.95, 1.04, 0.95],
+              }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
             />
 
             <motion.div
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.25 }}
-              className="relative h-80 w-80 overflow-hidden rounded-full border border-zinc-700/50 bg-zinc-950 p-[3px] shadow-2xl shadow-black/50 md:h-96 md:w-96"
+              className="relative h-72 w-72 overflow-hidden rounded-full border border-zinc-700/50 bg-zinc-950 p-[3px] shadow-2xl shadow-black/50 sm:h-80 sm:w-80 md:h-80 md:w-80 lg:h-96 lg:w-96"
             >
               <div className="h-full w-full overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
                 <img
@@ -138,23 +141,18 @@ const Hero = () => {
               </div>
             </motion.div>
 
-            {/* Floating tech badges */}
-            {[
-              { label: "React", className: "-left-4 top-8 md:-left-8" },
-              { label: "TS", className: "-right-2 top-16 md:-right-6" },
-              { label: "Node", className: "bottom-12 -left-2 md:-left-6" },
-            ].map((badge, i) => (
+            {floatingBadges.map((badge, index) => (
               <motion.span
                 key={badge.label}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.15 }}
+                transition={{ delay: 0.5 + index * 0.12 }}
                 className={`absolute ${badge.className} rounded-full border border-zinc-700/60 bg-zinc-950/80 px-3 py-1 text-xs font-medium text-zinc-300 backdrop-blur-md`}
               >
                 <motion.span
                   animate={{ y: [0, -4, 0] }}
                   transition={{
-                    duration: 2.5 + i * 0.5,
+                    duration: 2.5 + index * 0.5,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
