@@ -1,66 +1,126 @@
+import React, { useState } from "react";
 import { motion } from "motion/react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
-type ExperienceItem = {
-  role: string;
-  company: string;
-  location: string;
-  period: string;
-  description: string;
-};
+const Contact = () => {
+  // Track the form's display state; this does not confirm actual delivery.
+  const [status, setStatus] = useState<"idle" | "sent">("idle");
 
-const experience: ExperienceItem[] = [
-  {
-    role: "IT Intern / Cooperative Training",
-    company: "Prince Sultan Armed Forces Hospital",
-    location: "Madinah, Saudi Arabia",
-    period: "Jul 2025 — Aug 2025",
-    description:
-      "Supported the IT department with day-to-day technical operations and hands-on systems work during a cooperative training placement.",
-  },
-];
+  const handleSubmit = (e: React.FormEvent) => {
+    // Prevent the browser's default form submission and page reload.
+    e.preventDefault();
+    // Wire this up to your form endpoint (Formspree, Resend, etc.)
+    setStatus("sent");
+  };
 
-const Experience = () => {
   return (
+    // Animate the section once when 25% of it enters the viewport.
     <motion.section
-      id="experience"
+      id="contact"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.6 }}
       className="mx-auto max-w-6xl px-6 py-24"
     >
-      <div className="mb-12 space-y-4">
-        <Badge variant="outline" className="border-zinc-700 bg-zinc-950 text-zinc-300">
-          Experience
-        </Badge>
-        <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Where I have worked.
-        </h2>
-      </div>
+      {/* Stack on smaller screens and use two columns from the md breakpoint. */}
+      <div className="grid gap-12 md:grid-cols-2">
+        <div className="space-y-6">
+          <Badge variant="outline" className="border-zinc-700 bg-zinc-950 text-zinc-300">
+            Contact
+          </Badge>
 
-      <div className="relative space-y-10 border-l border-zinc-800 pl-8">
-        {experience.map((item, index) => (
-          <motion.div
-            key={item.company}
-            initial={{ opacity: 0, x: -16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.5, delay: index * 0.08 }}
-            className="relative"
+          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Let's build something together.
+          </h2>
+
+          <p className="max-w-md leading-7 text-zinc-400">
+            Have a project in mind or just want to talk shop? My inbox is open.
+          </p>
+
+          {/* Social links use accessible labels for their icon-only content. */}
+          <div className="flex items-center gap-4">
+            <a
+              href="#"
+              aria-label="GitHub"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 transition hover:border-[#5B7FDE]/60 hover:text-white"
+            >
+              <FaGithub size={18} />
+            </a>
+
+            <a
+              href="#"
+              aria-label="LinkedIn"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 transition hover:border-[#5B7FDE]/60 hover:text-white"
+            >
+              <FaLinkedin size={18} />
+            </a>
+
+            <a
+              href="mailto:your-email@example.com"
+              aria-label="Email"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 transition hover:border-[#5B7FDE]/60 hover:text-white"
+            >
+              <Mail size={18} />
+            </a>
+          </div>
+        </div>
+
+        {/* Run the submit handler after the browser validates the required fields. */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="name" className="text-sm text-zinc-400">
+              Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              required
+              className="w-full rounded-lg border border-zinc-800 bg-[#111111] px-4 py-2.5 text-sm text-white outline-none transition focus:border-[#5B7FDE]"
+              placeholder="Your name"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm text-zinc-400">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              className="w-full rounded-lg border border-zinc-800 bg-[#111111] px-4 py-2.5 text-sm text-white outline-none transition focus:border-[#5B7FDE]"
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="message" className="text-sm text-zinc-400">
+              Message
+            </label>
+            <textarea
+              id="message"
+              required
+              rows={5}
+              className="w-full resize-none rounded-lg border border-zinc-800 bg-[#111111] px-4 py-2.5 text-sm text-white outline-none transition focus:border-[#5B7FDE]"
+              placeholder="Tell me about your project"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full bg-white text-black hover:bg-zinc-200"
           >
-            <span className="absolute -left-[2.35rem] top-1 h-3 w-3 rounded-full border border-[#5B7FDE] bg-[#0A0A0A]" />
-            <p className="text-sm text-zinc-500">{item.period}</p>
-            <h3 className="mt-1 text-lg font-semibold text-white">{item.role}</h3>
-            <p className="text-sm text-zinc-400">
-              {item.company} · {item.location}
-            </p>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">{item.description}</p>
-          </motion.div>
-        ))}
+            {/* Update the button text according to the form's display state. */}
+            {status === "sent" ? "Message sent" : "Send message"}
+          </Button>
+        </form>
       </div>
     </motion.section>
   );
 };
 
-export default Experience;
+export default Contact;

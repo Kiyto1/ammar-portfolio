@@ -5,6 +5,7 @@ import { Separator as SeparatorPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+// Render a horizontal or vertical divider using Radix's separator.
 function Separator({
   className,
   orientation = "horizontal",
@@ -14,6 +15,7 @@ function Separator({
   return (
     <SeparatorPrimitive.Root
       data-slot="separator"
+      // Indicate whether the divider is purely visual or semantically meaningful.
       decorative={decorative}
       orientation={orientation}
       className={cn(

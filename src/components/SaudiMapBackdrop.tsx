@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 
+// Fade the map's edges while keeping its center visible.
 const mapMask = {
   maskImage:
     "radial-gradient(ellipse 75% 70% at 50% 50%, black 28%, transparent 82%)",
@@ -7,6 +8,7 @@ const mapMask = {
     "radial-gradient(ellipse 75% 70% at 50% 50%, black 28%, transparent 82%)",
 };
 
+// Marker positions, label placement, and animation delays.
 const cities = [
   {
     name: "Madinah",
@@ -24,6 +26,7 @@ const cities = [
   },
 ];
 
+// Derive the marker's prop types from a single item in the cities array.
 const CityMarker = ({
   name,
   left,
@@ -37,14 +40,18 @@ const CityMarker = ({
     initial={{ opacity: 0, scale: 0.6 }}
     animate={{ opacity: [0.75, 1, 0.75], scale: 1 }}
     transition={{
+      // Pulse continuously, with a separate entrance animation for scale.
       opacity: { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay },
       scale: { duration: 0.5, delay: 0.3 + delay },
     }}
   >
+    {/* Soft glow behind the marker. */}
     <span className="absolute -inset-3 rounded-full bg-emerald-400/20 blur-md" />
 
+    {/* Visible city marker. */}
     <span className="relative block h-2 w-2 rounded-full border border-emerald-300/70 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.65)]" />
 
+    {/* Position the city label above or below its marker. */}
     <span
       className={`absolute whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-400/75 ${labelClass}`}
     >
@@ -55,6 +62,7 @@ const CityMarker = ({
 
 const SaudiMapBackdrop = () => {
   return (
+    // Show this decorative map from the medium breakpoint onward.
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -62,6 +70,7 @@ const SaudiMapBackdrop = () => {
       className="pointer-events-none absolute inset-0 hidden md:block"
       aria-hidden
     >
+      {/* Provide a shared positioning area for the map and city markers. */}
       <div className="absolute left-[56%] top-1/2 h-[min(82vh,760px)] w-[min(82vh,760px)] -translate-x-1/2 -translate-y-[48%]">
         <img
           src="/sa.svg"
@@ -69,11 +78,13 @@ const SaudiMapBackdrop = () => {
           className="absolute inset-0 h-full w-full object-contain opacity-[0.28]"
           style={{
             ...mapMask,
+            // Recolor the map white and add a subtle green glow.
             filter:
               "brightness(0) invert(1) drop-shadow(0 0 24px rgba(16,185,129,0.18))",
           }}
         />
 
+        {/* Pass each city's settings to the reusable marker component. */}
         {cities.map((city) => (
           <CityMarker key={city.name} {...city} />
         ))}

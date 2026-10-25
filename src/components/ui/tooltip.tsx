@@ -3,6 +3,7 @@ import { Tooltip as TooltipPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+// Configure shared tooltip behavior, with no opening delay by default.
 function TooltipProvider({
   delayDuration = 0,
   ...props
@@ -16,18 +17,21 @@ function TooltipProvider({
   )
 }
 
+// Manage the connection and open state between a trigger and its tooltip.
 function Tooltip({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
 }
 
+// Define the element users hover over or focus to reveal the tooltip.
 function TooltipTrigger({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
+// Display the tooltip's content with positioning, styling, and animations.
 function TooltipContent({
   className,
   sideOffset = 0,
@@ -35,6 +39,7 @@ function TooltipContent({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
   return (
+    // Render outside the normal parent hierarchy to avoid clipping.
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
@@ -46,6 +51,7 @@ function TooltipContent({
         {...props}
       >
         {children}
+        {/* Add the small arrow pointing toward the trigger. */}
         <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-foreground fill-foreground" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import SaudiMapBackdrop from "./SaudiMapBackdrop";
 
 
+// Define the glowing background shapes and their animation paths.
 const orbs = [
   {
     className: "left-[-10%] top-[5%] h-[520px] w-[520px] bg-emerald-500/12 blur-[120px]",
@@ -17,6 +18,7 @@ const orbs = [
 ];
 
 const HeroBackground = () => {
+  // Cache the particle settings across renders using an empty dependency array.
   const particles = useMemo(
     () =>
       Array.from({ length: 14 }, (_, i) => ({
@@ -31,6 +33,7 @@ const HeroBackground = () => {
   );
 
   return (
+    // Cover the parent section without intercepting clicks or hover events.
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
       {/* Radial vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(255,255,255,0.05),transparent_70%)]" />
@@ -45,6 +48,7 @@ const HeroBackground = () => {
         />
       ))}
 
+      {/* The imported component provides the desktop map. */}
       <SaudiMapBackdrop />
 
       {/* Mobile: same tint recipe as desktop map, so it reads as one consistent system */}
@@ -54,15 +58,18 @@ const HeroBackground = () => {
           alt=""
           className="relative h-full w-full object-contain opacity-[0.45]"
           style={{
+            // Fade the map's edges using a gradient mask.
             maskImage:
               "radial-gradient(ellipse 68% 62% at 50% 50%, black 24%, transparent 78%)",
             WebkitMaskImage:
               "radial-gradient(ellipse 68% 62% at 50% 50%, black 24%, transparent 78%)",
+            // Recolor the SVG and add a soft green glow.
             filter:
               "brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(100deg) drop-shadow(0 0 24px rgba(16,185,129,0.25))",
           }}
         />
 
+        {/* Position each city marker relative to the mobile map container. */}
         {[
           { name: "Madinah", left: "38%", top: "42%" },
           { name: "Jeddah", left: "35%", top: "58%" },

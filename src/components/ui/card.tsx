@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+// Container that controls the card's appearance and shared spacing.
 function Card({
   className,
   size = "default",
@@ -20,6 +21,7 @@ function Card({
   )
 }
 
+// Arrange the title, description, and optional action in a grid.
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -33,6 +35,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Display the title, using smaller text inside a small card.
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -46,6 +49,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Display supporting text with a muted color.
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -56,6 +60,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Position an action, such as a button, at the header's upper-right corner.
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -69,6 +74,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Wrap the main content using the card's shared horizontal spacing.
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -79,6 +85,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Display footer content with a top border and muted background.
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

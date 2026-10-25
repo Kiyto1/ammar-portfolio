@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import HeroBackground from "./HeroBackground";
 
+// Titles displayed in the repeating typing animation.
 const techStack = [
   "Full-Stack Developer",
   "React & TypeScript",
@@ -13,6 +14,7 @@ const techStack = [
   "AI-Powered Apps",
 ];
 
+// Social destinations and their corresponding icon components.
 const socialLinks = [
   { href: "#", label: "GitHub", icon: FaGithub },
   { href: "#", label: "LinkedIn", icon: FaLinkedin },
@@ -23,6 +25,7 @@ const socialLinks = [
   },
 ];
 
+// Labels positioned around the profile photo, with responsive offsets.
 const floatingBadges = [
   { label: "React", className: "-left-4 top-8 md:-left-8" },
   { label: "TS", className: "-right-2 top-16 md:-right-6" },
@@ -34,6 +37,7 @@ const Hero = () => {
     <section id="home" className="relative min-h-screen overflow-hidden px-6 pt-20">
       <HeroBackground />
 
+      {/* Stack the introduction and photo on mobile; use two columns from md. */}
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-12 md:grid-cols-2 md:gap-8 lg:gap-12">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
@@ -56,6 +60,7 @@ const Hero = () => {
               Ammar Alharpy
             </h1>
 
+            {/* Reserve height to reduce layout movement as the text changes. */}
             <h2 className="min-h-[2rem] text-xl font-medium text-zinc-300 md:min-h-[2.5rem] md:text-2xl">
               <TypeAnimation
                 sequence={techStack.flatMap((item) => [item, 2200])}
@@ -73,6 +78,7 @@ const Hero = () => {
             AI-powered tools.
           </p>
 
+          {/* Render each social link using its icon and accessible label. */}
           <div className="flex items-center gap-4">
             {socialLinks.map(({ href, label, icon: Icon }) => (
               <a
@@ -86,6 +92,7 @@ const Hero = () => {
             ))}
           </div>
 
+          {/* Style navigation links as buttons without adding button wrappers. */}
           <div className="flex flex-wrap gap-4">
             <Button asChild className="bg-white text-black hover:bg-zinc-200">
               <a href="#projects">View Projects</a>
@@ -101,6 +108,7 @@ const Hero = () => {
           </div>
         </motion.div>
 
+        {/* Fade and scale the profile area into view when it mounts. */}
         <motion.div
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -108,6 +116,7 @@ const Hero = () => {
           className="flex justify-center md:justify-end"
         >
           <div className="relative shrink-0">
+            {/* Rotate a gradient layer behind the photo to create a moving rim. */}
             <motion.div
               className="absolute -inset-1 rounded-full opacity-60"
               style={{
@@ -118,6 +127,7 @@ const Hero = () => {
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             />
 
+            {/* Pulse the glow behind the profile photo. */}
             <motion.div
               className="absolute -inset-4 rounded-full bg-emerald-500/15 blur-2xl"
               animate={{
@@ -127,6 +137,7 @@ const Hero = () => {
               transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
             />
 
+            {/* Crop the photo into a responsive circle and enlarge it on hover. */}
             <motion.div
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.25 }}
@@ -141,6 +152,7 @@ const Hero = () => {
               </div>
             </motion.div>
 
+            {/* Stagger badge entrances, then float each label continuously. */}
             {floatingBadges.map((badge, index) => (
               <motion.span
                 key={badge.label}

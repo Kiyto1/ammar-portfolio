@@ -17,12 +17,14 @@ import {
   SiOpenid,
 } from "react-icons/si";
 
+// Define the structure of each skill category.
 type SkillGroup = {
   title: string;
   icons: { Icon: IconType; color: string }[];
   skills: string[];
 };
 
+// Content used to generate the skill cards.
 const skillGroups: SkillGroup[] = [
   {
     title: "Frontend",
@@ -62,6 +64,7 @@ const skillGroups: SkillGroup[] = [
   },
 ];
 
+// Coordinate the entrance animations of the skill cards.
 const stagger = {
   hidden: {},
   show: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
@@ -72,6 +75,7 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+// Colors for the decorative code preview.
 const syntax = {
   keyword: "#C792EA",
   fn: "#82AAFF",
@@ -81,6 +85,7 @@ const syntax = {
   comment: "#546E7A",
 };
 
+// Static illustration of a code review; the displayed code is not executed.
 const CodeReviewCard = () => {
   return (
     <motion.div
@@ -90,6 +95,7 @@ const CodeReviewCard = () => {
       transition={{ duration: 0.5, delay: 0.1 }}
       className="min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-[#0D0D0D] shadow-xl shadow-black/30"
     >
+      {/* Editor title bar and illustrative pull request label. */}
       <div className="flex items-center gap-2 border-b border-zinc-800 bg-[#111111] px-4 py-2.5">
         <div className="flex gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
@@ -104,6 +110,7 @@ const CodeReviewCard = () => {
         </div>
       </div>
 
+      {/* Preserve code spacing and allow horizontal scrolling. */}
       <div className="space-y-0.5 overflow-x-auto px-4 py-4 font-mono text-[12px] leading-6">
         <div className="flex gap-4">
           <span className="w-5 shrink-0 select-none text-right text-zinc-600">1</span>
@@ -191,6 +198,7 @@ const CodeReviewCard = () => {
           <span className="whitespace-pre" style={{ color: syntax.text }}>{"}"}</span>
         </div>
 
+        {/* Illustrative reviewer comment. */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, x: -8 }}
           whileInView={{ opacity: 1, scale: 1, x: 0 }}
@@ -210,6 +218,7 @@ const CodeReviewCard = () => {
         </motion.div>
       </div>
 
+      {/* Static review summary. */}
       <div className="flex items-center justify-between border-t border-zinc-800 bg-[#111111] px-4 py-2.5">
         <span className="text-[11px] text-zinc-500">2 files changed</span>
         <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1">
@@ -228,6 +237,7 @@ const Profile = () => {
 
       <div className="relative z-10 mx-auto max-w-6xl">
       <div className="grid gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-start">
+        {/* About text and animated underline. */}
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -268,6 +278,7 @@ const Profile = () => {
             </span>
           </div>
 
+          {/* Generate skill cards with staggered entrance animations. */}
           <motion.div
             variants={stagger}
             initial="hidden"
