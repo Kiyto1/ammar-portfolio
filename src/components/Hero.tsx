@@ -53,7 +53,7 @@ const Hero = () => {
             <p className="text-zinc-400">Hi, I am</p>
 
             <h1 className="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent md:text-6xl">
-              Ammar Alsaedi
+              Ammar Alharpy
             </h1>
 
             <h2 className="min-h-[2rem] text-xl font-medium text-zinc-300 md:min-h-[2.5rem] md:text-2xl">
