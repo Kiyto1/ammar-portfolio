@@ -63,12 +63,15 @@ const CrmScreenshot = () => (
       aria-label="Open the live CRM Assistant demo"
       className="group relative block focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-400"
     >
-      <img
-        src="/Demo.png"
-        alt="Screenshot of the CRM Assistant chat interface"
-        loading="lazy"
-        className="block h-auto w-full"
-      />
+    <img
+      src="/Demo.png"
+      alt="Screenshot of the CRM Assistant chat interface"
+      width={1410}
+      height={859}
+      loading="lazy"
+      decoding="async"
+      className="block h-auto w-full"
+    />
       <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
         Open live demo
         <ArrowUpRight size={15} className="ml-1.5" aria-hidden="true" />
@@ -232,11 +235,13 @@ const ProjectRow = ({ project, flip }: { project: Project; flip: boolean }) => {
 const Projects = () => {
   return (
     <section
-      id="projects"
-      aria-labelledby="projects-heading"
-      className="mx-auto max-w-6xl scroll-mt-24 px-6 py-24"
-    >
-      <div className="mb-16 max-w-2xl space-y-4">
+        aria-labelledby="projects-heading"
+        className="mx-auto max-w-6xl px-6 py-24"
+      >
+        <div
+          id="projects"
+          className="mb-16 max-w-2xl scroll-mt-16 space-y-4"
+        >
         <Badge variant="outline" className="border-zinc-700 bg-zinc-950 text-zinc-300">
           Projects
         </Badge>

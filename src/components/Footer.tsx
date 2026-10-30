@@ -37,7 +37,7 @@ const Footer = () => {
               Ammar<span className="text-emerald-400">.</span>
             </a>
             <p className="text-sm leading-6 text-zinc-500">
-              Full-stack and AI developer. Open to roles in Jeddah and Madinah.
+              Full-stack developer. Open to roles in Jeddah and Madinah.
             </p>
           </div>
 

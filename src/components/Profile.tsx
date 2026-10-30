@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { FileCode } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+export const EMAIL = "AmmarHassan.CS@gmail.com";
 import ProfileBackground from "./ProfileBackground";
 import type { IconType } from "react-icons";
 import {
@@ -96,9 +97,9 @@ const developer = {
   role: "Full-Stack Developer",
   education: "Computer Science, Islamic University of Madinah",
   stack: ["React", "TypeScript", "Python", "FastAPI"],
-  location: ["Jeddah", "Madinah","Riyadh"],
+  location: ["Jeddah", "Madinah"],
   status: "Open to work",
-} as const;`;
+${EMAIL ? `  contact: "${EMAIL}",\n` : ""}} as const;`;
 
 // Small highlighter: comments, strings, keywords and function calls.
 const pattern = /(\/\/.*)|("[^"]*")|\b(const|as)\b|\b([A-Za-z_]\w*)(?=\()/g;
