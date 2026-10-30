@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { GitPullRequest, MessageSquare, Check } from "lucide-react";
+import { FileCode } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import ProfileBackground from "./ProfileBackground";
@@ -14,7 +14,8 @@ import {
   SiSupabase,
   SiGithub,
   SiVercel,
-  SiOpenid,
+  SiGooglegemini,
+  SiOpenjdk,
 } from "react-icons/si";
 
 // Define the structure of each skill category.
@@ -41,8 +42,9 @@ const skillGroups: SkillGroup[] = [
       { Icon: SiNodedotjs, color: "#5FA04E" },
       { Icon: SiFastapi, color: "#009688" },
       { Icon: SiPython, color: "#FFD43B" },
+      { Icon: SiOpenjdk, color: "#ED8B00" },
     ],
-    skills: ["Node.js", "FastAPI", "Python", "REST APIs"],
+    skills: ["Node.js", "FastAPI", "Python", "Java", "REST APIs"],
   },
   {
     title: "Database & Tools",
@@ -56,11 +58,11 @@ const skillGroups: SkillGroup[] = [
   {
     title: "AI & Integration",
     icons: [
-      { Icon: SiOpenid, color: "#FFFFFF" },
+      { Icon: SiGooglegemini, color: "#8E75B2" },
       { Icon: SiPython, color: "#FFD43B" },
       { Icon: SiFastapi, color: "#009688" },
     ],
-    skills: ["AI APIs", "OCR", "Automation", "API Integration"],
+    skills: ["AI APIs", "RAG", "LangGraph", "OCR", "Automation", "API Integration"],
   },
 ];
 
@@ -85,8 +87,40 @@ const syntax = {
   comment: "#546E7A",
 };
 
-// Static illustration of a code review; the displayed code is not executed.
-const CodeReviewCard = () => {
+type Token = [text: string, color: keyof typeof syntax];
+
+// The card shows a small "developer profile" object, including availability.
+const profileCode = `// Who I am and what I'm looking for
+const developer = {
+  name: "Ammar Alsaedi",
+  role: "Full-Stack Developer",
+  education: "Computer Science, Islamic University of Madinah",
+  stack: ["React", "TypeScript", "Python", "FastAPI"],
+  location: ["Jeddah", "Madinah","Riyadh"],
+  status: "Open to work",
+} as const;`;
+
+// Small highlighter: comments, strings, keywords and function calls.
+const pattern = /(\/\/.*)|("[^"]*")|\b(const|as)\b|\b([A-Za-z_]\w*)(?=\()/g;
+
+const highlight = (line: string): Token[] => {
+  const tokens: Token[] = [];
+  let last = 0;
+  for (const m of line.matchAll(pattern)) {
+    const start = m.index ?? 0;
+    if (start > last) tokens.push([line.slice(last, start), "text"]);
+    const color = m[1] ? "comment" : m[2] ? "string" : m[3] ? "keyword" : "fn";
+    tokens.push([m[0], color]);
+    last = start + m[0].length;
+  }
+  if (last < line.length) tokens.push([line.slice(last), "text"]);
+  return tokens;
+};
+
+// Code card that doubles as a status line: the availability row is highlighted.
+const CodeCard = () => {
+  const lines = profileCode.split("\n");
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -95,136 +129,37 @@ const CodeReviewCard = () => {
       transition={{ duration: 0.5, delay: 0.1 }}
       className="min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-[#0D0D0D] shadow-xl shadow-black/30"
     >
-      {/* Editor title bar and illustrative pull request label. */}
       <div className="flex items-center gap-2 border-b border-zinc-800 bg-[#111111] px-4 py-2.5">
-        <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
-        </div>
-        <span className="ml-2 truncate font-mono text-xs text-zinc-500">career-match.ts</span>
-
-        <div className="ml-auto flex shrink-0 items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-950 px-2 py-0.5">
-          <GitPullRequest size={11} className="text-emerald-400" />
-          <span className="text-[10px] text-zinc-500">PR #42</span>
-        </div>
+        <FileCode size={14} className="shrink-0 text-emerald-400" aria-hidden="true" />
+        <span className="truncate font-mono text-xs text-zinc-500">developer.ts</span>
       </div>
 
       {/* Preserve code spacing and allow horizontal scrolling. */}
-      <div className="space-y-0.5 overflow-x-auto px-4 py-4 font-mono text-[12px] leading-6">
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">1</span>
-          <span className="whitespace-pre" style={{ color: syntax.comment }}>
-            // Rank open roles against a candidate's RIASEC profile
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">2</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.keyword }}>export async function</span>{" "}
-            <span style={{ color: syntax.fn }}>matchCareer</span>
-            <span style={{ color: syntax.text }}>(profile: </span>
-            <span style={{ color: syntax.type }}>RiasecProfile</span>
-            <span style={{ color: syntax.text }}>) {"{"}</span>
-          </span>
-        </div>
-
-        <div className="-mx-2 flex gap-4 rounded bg-emerald-500/10 px-2">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">3</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.keyword }}>  const</span>{" "}
-            <span style={{ color: syntax.text }}>scores = </span>
-            <span style={{ color: syntax.fn }}>normalizeScores</span>
-            <span style={{ color: syntax.text }}>(profile.answers);</span>
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">4</span>
-          <span className="whitespace-pre"> </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">5</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.keyword }}>  const</span>{" "}
-            <span style={{ color: syntax.text }}>matches = </span>
-            <span style={{ color: syntax.keyword }}>await</span>
-            <span style={{ color: syntax.text }}> db</span>
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">6</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.text }}>    .from(</span>
-            <span style={{ color: syntax.string }}>'careers'</span>
-            <span style={{ color: syntax.text }}>)</span>
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">7</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.text }}>    .select(</span>
-            <span style={{ color: syntax.string }}>'*'</span>
-            <span style={{ color: syntax.text }}>)</span>
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">8</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.text }}>    .order(</span>
-            <span style={{ color: syntax.string }}>'fit_score'</span>
-            <span style={{ color: syntax.text }}>, {"{"} ascending: </span>
-            <span style={{ color: syntax.keyword }}>false</span>
-            <span style={{ color: syntax.text }}> {"}"});</span>
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">9</span>
-          <span className="whitespace-pre">
-            <span style={{ color: syntax.keyword }}>  return</span>{" "}
-            <span style={{ color: syntax.fn }}>rankByFit</span>
-            <span style={{ color: syntax.text }}>(matches, scores);</span>
-          </span>
-        </div>
-
-        <div className="flex gap-4">
-          <span className="w-5 shrink-0 select-none text-right text-zinc-600">10</span>
-          <span className="whitespace-pre" style={{ color: syntax.text }}>{"}"}</span>
-        </div>
-
-        {/* Illustrative reviewer comment. */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, x: -8 }}
-          whileInView={{ opacity: 1, scale: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.5 }}
-          className="mt-4 flex items-start gap-2.5 rounded-lg border border-zinc-800 bg-zinc-950 p-3"
-        >
-          <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-emerald-500/40 bg-emerald-500/10">
-            <MessageSquare size={11} className="text-emerald-400" />
-          </div>
-          <div className="min-w-0 space-y-1">
-            <p className="text-xs font-medium text-zinc-300">Reviewer</p>
-            <p className="text-xs leading-5 text-zinc-500">
-              Clean normalization step — good call keeping this isolated from the fetch logic.
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Static review summary. */}
-      <div className="flex items-center justify-between border-t border-zinc-800 bg-[#111111] px-4 py-2.5">
-        <span className="text-[11px] text-zinc-500">2 files changed</span>
-        <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1">
-          <Check size={11} className="text-emerald-400" />
-          <span className="text-[11px] font-medium text-emerald-400">Approved</span>
-        </div>
+      <div className="overflow-x-auto px-4 py-4 font-mono text-[12px] leading-6 sm:text-[13px]">
+        {lines.map((line, i) => {
+          const isStatus = line.includes("status:");
+          return (
+            <div
+              key={i}
+              className={`flex gap-4 ${isStatus ? "-mx-2 rounded bg-emerald-500/10 px-2" : ""}`}
+            >
+              <span className="w-5 shrink-0 select-none text-right text-zinc-600">{i + 1}</span>
+              <span className="flex items-center whitespace-pre" style={{ color: syntax.text }}>
+                {highlight(line).map(([text, color], j) => (
+                  <span key={j} style={{ color: syntax[color] }}>
+                    {text}
+                  </span>
+                ))}
+                {isStatus && (
+                  <span className="relative ml-3 flex h-2 w-2" aria-hidden="true">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                  </span>
+                )}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </motion.div>
   );
@@ -332,7 +267,7 @@ const Profile = () => {
         transition={{ duration: 0.5 }}
         className="mt-12"
       >
-        <CodeReviewCard />
+        <CodeCard />
       </motion.div>
       </div>
     </section>

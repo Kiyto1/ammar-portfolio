@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 // Characters available for the falling code effect.
 const CHARS = "{}<>/=+-*;()[]01".split("");
@@ -7,7 +8,12 @@ const ProfileBackground = () => {
   // Hold a reference to the canvas element without triggering re-renders.
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Skip the animation on phones and when the visitor prefers reduced motion.
+  const enabled = useMediaQuery("(min-width: 768px) and (prefers-reduced-motion: no-preference)");
+
   useEffect(() => {
+    if (!enabled) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -31,17 +37,20 @@ const ProfileBackground = () => {
       canvas.height = height;
       columns = Math.floor(width / fontSize);
 
-      // Start columns at varied positions above the visible canvas.
-      drops = Array.from({ length: columns }, () => Math.floor(Math.random() * -height));
+      // Start columns at varied positions up to one screen above the canvas.
+      const rows = Math.ceil(height / fontSize);
+      drops = Array.from({ length: columns }, () => -Math.floor(Math.random() * rows));
     };
 
     resize();
     window.addEventListener("resize", resize);
 
     let frame = 0;
-    let rafId: number;
+    let rafId = 0;
+    let running = false;
 
     const draw = () => {
+      if (!running) return;
       frame++;
 
       // Update the drawing on every third animation callback.
@@ -74,14 +83,33 @@ const ProfileBackground = () => {
       rafId = requestAnimationFrame(draw);
     };
 
-    rafId = requestAnimationFrame(draw);
+    const start = () => {
+      if (running) return;
+      running = true;
+      rafId = requestAnimationFrame(draw);
+    };
 
-    // Stop the animation and remove the listener during cleanup.
-    return () => {
-      window.removeEventListener("resize", resize);
+    const stop = () => {
+      running = false;
       cancelAnimationFrame(rafId);
     };
-  }, []);
+
+    // Only animate while the section is on screen.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) start();
+      else stop();
+    });
+    observer.observe(canvas);
+
+    // Stop the animation and remove listeners during cleanup.
+    return () => {
+      observer.disconnect();
+      stop();
+      window.removeEventListener("resize", resize);
+    };
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     // Keep the decoration non-interactive and hidden from assistive technology.

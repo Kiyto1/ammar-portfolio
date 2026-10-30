@@ -1,116 +1,99 @@
-import React, { useState } from "react";
-import { motion } from "motion/react";
+import type { ComponentType } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { ArrowUpRight, Download, Mail } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+// Single place for contact details. Empty values are hidden everywhere they are used.
+export const GITHUB_URL = "https://github.com/Kiyto1";
+export const LINKEDIN_URL = "https://www.linkedin.com/in/ammar-al-saedi-240114242/";
+export const EMAIL = "AmmarHassan.CS@gmail.com";
+export const CV_PATH = "/Ammar_Alsaedi_CV.pdf";
+type IconProps = { size?: number; "aria-hidden"?: boolean | "true" | "false" };
+
+type ContactLink = {
+  label: string;
+  value: string;
+  href: string;
+  Icon: ComponentType<IconProps>;
+};
+
+// "https://www.linkedin.com/in/x/" -> "linkedin.com/in/x"
+const display = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+
+// Links left empty in src/lib/contact.ts are filtered out instead of shown dead.
+const links: ContactLink[] = [
+  { label: "Email", value: EMAIL, href: EMAIL ? `mailto:${EMAIL}` : "", Icon: Mail },
+  { label: "LinkedIn", value: display(LINKEDIN_URL), href: LINKEDIN_URL, Icon: FaLinkedin },
+  { label: "GitHub", value: display(GITHUB_URL), href: GITHUB_URL, Icon: FaGithub },
+].filter((link) => link.href);
 
 const Contact = () => {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Wire this up to your form endpoint (Formspree, Resend, etc.)
-    setStatus("sent");
-  };
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.section
       id="contact"
-      initial={{ opacity: 0, y: 40 }}
+      aria-labelledby="contact-heading"
+      initial={reduceMotion ? false : { opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.6 }}
-      className="mx-auto max-w-6xl px-6 py-24"
+      className="mx-auto max-w-6xl scroll-mt-24 px-6 py-24"
     >
-      <div className="grid gap-12 md:grid-cols-2">
+      <div className="grid items-center gap-12 md:grid-cols-2">
         <div className="space-y-6">
           <Badge variant="outline" className="border-zinc-700 bg-zinc-950 text-zinc-300">
             Contact
           </Badge>
 
-          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-            Let's build something together.
+          <h2
+            id="contact-heading"
+            className="text-3xl font-bold tracking-tight text-white md:text-4xl"
+          >
+            Let's work together.
           </h2>
 
           <p className="max-w-md leading-7 text-zinc-400">
-            Have a project in mind or just want to talk shop? My inbox is open.
+            I'm looking for full-stack and AI developer roles in Jeddah and Madinah. Reach out
+            through any of these.
           </p>
 
-          <div className="flex items-center gap-4">
-            <a
-              href="#"
-              aria-label="GitHub"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 transition hover:border-[#5B7FDE]/60 hover:text-white"
-            >
-              <FaGithub size={18} />
-            </a>
-
-            <a
-              href="#"
-              aria-label="LinkedIn"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 transition hover:border-[#5B7FDE]/60 hover:text-white"
-            >
-              <FaLinkedin size={18} />
-            </a>
-
-            <a
-              href="mailto:your-email@example.com"
-              aria-label="Email"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 transition hover:border-[#5B7FDE]/60 hover:text-white"
-            >
-              <Mail size={18} />
-            </a>
-          </div>
+          {CV_PATH && (
+            <Button asChild className="bg-emerald-500 text-black hover:bg-emerald-400">
+              <a href={CV_PATH} download>
+                <Download size={16} aria-hidden="true" />
+                Download CV
+              </a>
+            </Button>
+          )}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="name" className="text-sm text-zinc-400">
-              Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              required
-              className="w-full rounded-lg border border-zinc-800 bg-[#111111] px-4 py-2.5 text-sm text-white outline-none transition focus:border-[#5B7FDE]"
-              placeholder="Your name"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm text-zinc-400">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              className="w-full rounded-lg border border-zinc-800 bg-[#111111] px-4 py-2.5 text-sm text-white outline-none transition focus:border-[#5B7FDE]"
-              placeholder="you@example.com"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="message" className="text-sm text-zinc-400">
-              Message
-            </label>
-            <textarea
-              id="message"
-              required
-              rows={5}
-              className="w-full resize-none rounded-lg border border-zinc-800 bg-[#111111] px-4 py-2.5 text-sm text-white outline-none transition focus:border-[#5B7FDE]"
-              placeholder="Tell me about your project"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full bg-white text-black hover:bg-zinc-200"
-          >
-            {status === "sent" ? "Message sent" : "Send message"}
-          </Button>
-        </form>
+        <ul className="space-y-3">
+          {links.map(({ label, value, href, Icon }) => (
+            <li key={label}>
+              <a
+                href={href}
+                target={href.startsWith("mailto:") ? undefined : "_blank"}
+                rel="noreferrer"
+                className="group flex items-center gap-4 rounded-xl border border-zinc-800 bg-[#101010] p-4 transition-colors hover:border-emerald-500/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-emerald-400">
+                  <Icon size={18} aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs text-zinc-500">{label}</span>
+                  <span className="block truncate text-sm text-zinc-100">{value}</span>
+                </span>
+                <ArrowUpRight
+                  size={16}
+                  aria-hidden="true"
+                  className="shrink-0 text-zinc-600 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-emerald-400"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </motion.section>
   );

@@ -38,11 +38,14 @@ const HeroBackground = () => {
       {/* Radial vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(255,255,255,0.05),transparent_70%)]" />
 
-      {/* Two soft ambient orbs, kept light so they don't compete with the map */}
+      {/* Phones: a static gradient glow. Large animated blurs are expensive on mobile GPUs. */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_25%_18%,rgba(16,185,129,0.14),transparent_70%)] md:hidden" />
+
+      {/* Desktop: two soft ambient orbs, kept light so they don't compete with the map */}
       {orbs.map((orb, index) => (
         <motion.div
           key={index}
-          className={`absolute rounded-full ${orb.className}`}
+          className={`absolute hidden rounded-full md:block ${orb.className}`}
           animate={orb.animate}
           transition={{ duration: orb.duration, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -63,16 +66,16 @@ const HeroBackground = () => {
               "radial-gradient(ellipse 68% 62% at 50% 50%, black 24%, transparent 78%)",
             WebkitMaskImage:
               "radial-gradient(ellipse 68% 62% at 50% 50%, black 24%, transparent 78%)",
-            // Recolor the SVG and add a soft green glow.
-            filter:
-              "brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(100deg) drop-shadow(0 0 24px rgba(16,185,129,0.25))",
+            // Recolor the SVG. No drop-shadow here: blurred filters are slow on phones.
+            filter: "brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(100deg)",
           }}
         />
 
-        {/* Position each city marker relative to the mobile map container. */}
+        {/* Position each city marker relative to the mobile map container.
+            Same percentages as the desktop map: both containers are square. */}
         {[
-          { name: "Madinah", left: "38%", top: "42%" },
-          { name: "Jeddah", left: "35%", top: "58%" },
+          { name: "Madinah", left: "25%", top: "50%" },
+          { name: "Jeddah", left: "28%", top: "64%" },
         ].map((city) => (
           <div
             key={city.name}
@@ -102,7 +105,7 @@ const HeroBackground = () => {
       {particles.map((particle) => (
         <motion.span
           key={particle.id}
-          className="absolute rounded-full bg-white/30"
+          className="absolute hidden rounded-full bg-white/30 md:block"
           style={{
             left: particle.left,
             top: particle.top,

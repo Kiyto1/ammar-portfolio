@@ -1,184 +1,146 @@
-import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { Mail } from "lucide-react";
 import { motion } from "motion/react";
-import { TypeAnimation } from "react-type-animation";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import HeroBackground from "./HeroBackground";
+import { useMemo } from "react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import SaudiMapBackdrop from "./SaudiMapBackdrop";
 
-// Titles displayed in the repeating typing animation.
-const techStack = [
-  "Full-Stack Developer",
-  "React & TypeScript",
-  "Node.js & Python",
-  "AI-Powered Apps",
-];
 
-// Social destinations and their corresponding icon components.
-const socialLinks = [
-  { href: "#", label: "GitHub", icon: FaGithub },
-  { href: "#", label: "LinkedIn", icon: FaLinkedin },
+// Define the glowing background shapes and their animation paths.
+const orbs = [
   {
-    href: "mailto:your-email@example.com",
-    label: "Email",
-    icon: Mail,
+    className: "left-[-10%] top-[5%] h-[520px] w-[520px] bg-emerald-500/12 blur-[120px]",
+    animate: { x: [0, 40, -20, 0], y: [0, 30, -15, 0], scale: [1, 1.08, 0.96, 1] },
+    duration: 18,
+  },
+  {
+    className: "right-[-5%] top-[15%] h-[480px] w-[480px] bg-white/[0.04] blur-[110px]",
+    animate: { x: [0, -35, 25, 0], y: [0, -25, 20, 0], scale: [1, 0.94, 1.06, 1] },
+    duration: 22,
   },
 ];
 
-// Labels positioned around the profile photo, with responsive offsets.
-const floatingBadges = [
-  { label: "React", className: "-left-4 top-8 md:-left-8" },
-  { label: "TS", className: "-right-2 top-16 md:-right-6" },
-  { label: "Node", className: "bottom-12 -left-2 md:-left-6" },
-];
+const HeroBackground = () => {
+  // Phones get a static background. Hidden elements still run their JS animations,
+  // so the animated parts below are not mounted at all on small screens.
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-const Hero = () => {
+  // Cache the particle settings across renders using an empty dependency array.
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 14 }, (_, i) => ({
+        id: i,
+        left: `${8 + ((i * 37) % 84)}%`,
+        top: `${12 + ((i * 53) % 76)}%`,
+        size: 1 + (i % 2),
+        delay: (i % 7) * 0.4,
+        duration: 3 + (i % 5),
+      })),
+    [],
+  );
+
   return (
-    <section id="home" className="relative min-h-screen overflow-hidden px-6 pt-20">
-      <HeroBackground />
+    // Cover the parent section without intercepting clicks or hover events.
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+      {/* Radial vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(255,255,255,0.05),transparent_70%)]" />
 
-      {/* Stack the introduction and photo on mobile; use two columns from md. */}
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center gap-12 md:grid-cols-2 md:gap-8 lg:gap-12">
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          className="relative space-y-6"
-        >
-          <Badge
-            variant="outline"
-            className="border-zinc-700/80 bg-zinc-950/60 text-zinc-300 backdrop-blur-md"
-          >
-            <span className="mr-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            Available for opportunities
-          </Badge>
+      {/* Phones: a static gradient glow instead of large animated blurs. */}
+      {!isDesktop && (
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_25%_18%,rgba(16,185,129,0.14),transparent_70%)]" />
+      )}
 
-          <div className="space-y-3">
-            <p className="text-zinc-400">Hi, I am</p>
+      {/* Desktop: two soft ambient orbs, kept light so they don't compete with the map */}
+      {isDesktop &&
+        orbs.map((orb, index) => (
+          <motion.div
+            key={index}
+            className={`absolute rounded-full ${orb.className}`}
+            animate={orb.animate}
+            transition={{ duration: orb.duration, repeat: Infinity, ease: "easeInOut" }}
+          />
+        ))}
 
-            <h1 className="bg-gradient-to-br from-white via-zinc-100 to-zinc-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent md:text-6xl">
-              Ammar Alharpy
-            </h1>
+      {/* Desktop map. */}
+      {isDesktop && <SaudiMapBackdrop />}
 
-            {/* Reserve height to reduce layout movement as the text changes. */}
-            <h2 className="min-h-[2rem] text-xl font-medium text-zinc-300 md:min-h-[2.5rem] md:text-2xl">
-              <TypeAnimation
-                sequence={techStack.flatMap((item) => [item, 2200])}
-                wrapper="span"
-                speed={40}
-                repeat={Infinity}
-                className="text-emerald-400/90"
-              />
-            </h2>
-          </div>
+      {/* Mobile: same tint recipe as desktop map, so it reads as one consistent system */}
+      {!isDesktop && (
+        <div className="absolute inset-x-0 top-[10%] mx-auto h-[min(78vw,340px)] w-[min(78vw,340px)]">
+          <img
+            src="/sa.svg"
+            alt=""
+            className="relative h-full w-full object-contain opacity-[0.45]"
+            style={{
+              // Fade the map's edges using a gradient mask.
+              maskImage:
+                "radial-gradient(ellipse 68% 62% at 50% 50%, black 24%, transparent 78%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 68% 62% at 50% 50%, black 24%, transparent 78%)",
+              // Recolor the SVG. No drop-shadow here: blurred filters are slow on phones.
+              filter: "brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(100deg)",
+            }}
+          />
 
-          <p className="max-w-xl leading-7 text-zinc-400">
-            Computer Science graduate focused on building clean, practical web
-            applications using React, TypeScript, Node.js, Python, and
-            AI-powered tools.
-          </p>
-
-          {/* Render each social link using its icon and accessible label. */}
-          <div className="flex items-center gap-4">
-            {socialLinks.map(({ href, label, icon: Icon }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800/80 bg-zinc-950/50 text-zinc-400 backdrop-blur-md transition hover:border-zinc-500 hover:text-white"
-              >
-                <Icon size={18} className="transition group-hover:scale-110" />
-              </a>
-            ))}
-          </div>
-
-          {/* Style navigation links as buttons without adding button wrappers. */}
-          <div className="flex flex-wrap gap-4">
-            <Button asChild className="bg-white text-black hover:bg-zinc-200">
-              <a href="#projects">View Projects</a>
-            </Button>
-
-            <Button
-              asChild
-              variant="outline"
-              className="border-zinc-700 bg-zinc-950/40 text-white backdrop-blur hover:bg-zinc-900 hover:text-white"
+          {/* Position each city marker relative to the mobile map container. */}
+          {[
+            { name: "Madinah", left: "25%", top: "50%" },
+            { name: "Jeddah", left: "28%", top: "64%" },
+          ].map((city) => (
+            <div
+              key={city.name}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: city.left, top: city.top }}
             >
-              <a href="#contact">Contact Me</a>
-            </Button>
-          </div>
-        </motion.div>
+              <span className="block h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+            </div>
+          ))}
+        </div>
+      )}
 
-        {/* Fade and scale the profile area into view when it mounts. */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center md:justify-end"
-        >
-          <div className="relative shrink-0">
-            {/* Rotate a gradient layer behind the photo to create a moving rim. */}
-            <motion.div
-              className="absolute -inset-1 rounded-full opacity-60"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, transparent, rgba(16,185,129,0.35), transparent, rgba(255,255,255,0.22), transparent)",
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            />
+      {/* Dot grid overlay */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+          maskImage:
+            "radial-gradient(ellipse 70% 60% at 50% 45%, black 20%, transparent 75%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 70% 60% at 50% 45%, black 20%, transparent 75%)",
+        }}
+      />
 
-            {/* Pulse the glow behind the profile photo. */}
-            <motion.div
-              className="absolute -inset-4 rounded-full bg-emerald-500/15 blur-2xl"
-              animate={{
-                opacity: [0.25, 0.45, 0.25],
-                scale: [0.95, 1.04, 0.95],
-              }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-            />
+      {/* Floating particles, desktop only */}
+      {isDesktop &&
+        particles.map((particle) => (
+          <motion.span
+            key={particle.id}
+            className="absolute rounded-full bg-white/30"
+            style={{
+              left: particle.left,
+              top: particle.top,
+              width: particle.size,
+              height: particle.size,
+            }}
+            animate={{ opacity: [0.1, 0.45, 0.1], y: [0, -10, 0] }}
+            transition={{
+              duration: particle.duration,
+              repeat: Infinity,
+              delay: particle.delay,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
 
-            {/* Crop the photo into a responsive circle and enlarge it on hover. */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.25 }}
-              className="relative h-72 w-72 overflow-hidden rounded-full border border-zinc-700/50 bg-zinc-950 p-[3px] shadow-2xl shadow-black/50 sm:h-80 sm:w-80 md:h-80 md:w-80 lg:h-96 lg:w-96"
-            >
-              <div className="h-full w-full overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
-                <img
-                  src="/profile.png"
-                  alt="Ammar Alsaedi"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </motion.div>
+      {/* Spotlight behind profile column */}
+      {isDesktop && (
+        <div className="absolute left-3/4 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07)_0%,transparent_65%)]" />
+      )}
 
-            {/* Stagger badge entrances, then float each label continuously. */}
-            {floatingBadges.map((badge, index) => (
-              <motion.span
-                key={badge.label}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + index * 0.12 }}
-                className={`absolute ${badge.className} rounded-full border border-zinc-700/60 bg-zinc-950/80 px-3 py-1 text-xs font-medium text-zinc-300 backdrop-blur-md`}
-              >
-                <motion.span
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{
-                    duration: 2.5 + index * 0.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="block"
-                >
-                  {badge.label}
-                </motion.span>
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </section>
+      {/* Bottom fade into next section */}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+    </div>
   );
 };
 
-export default Hero;
+export default HeroBackground;
