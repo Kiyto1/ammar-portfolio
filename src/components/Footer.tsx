@@ -1,6 +1,7 @@
 import { ArrowUp, Mail } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import type { ComponentType } from "react";
+import { useApp } from "@/lib/app-context";
 // Single place for contact details. Empty values are hidden everywhere they are used.
 export const GITHUB_URL = "https://github.com/Kiyto1";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/ammar-al-saedi-240114242/";
@@ -15,33 +16,33 @@ const socialLinks: SocialLink[] = [
   { label: "Email", href: EMAIL ? `mailto:${EMAIL}` : "", Icon: Mail },
 ].filter((link) => link.href);
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
-];
-
 const linkClass =
   "rounded-sm transition-colors hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-400";
 
 const Footer = () => {
+  const { t } = useApp();
   const year = new Date().getFullYear();
+  const navLinks = [
+    { label: t.nav.home, href: "#home" },
+    { label: t.nav.about, href: "#about" },
+    { label: t.nav.projects, href: "#projects" },
+    { label: t.nav.contact, href: "#contact" },
+  ];
 
   return (
-    <footer className="border-t border-zinc-800 bg-[#0A0A0A]">
+    <footer className="border-t border-zinc-800 bg-page">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm space-y-3">
             <a href="#home" className="text-lg font-semibold tracking-wide text-white">
-              Ammar<span className="text-emerald-400">.</span>
+              {t.firstName}<span className="text-emerald-400">.</span>
             </a>
             <p className="text-sm leading-6 text-zinc-500">
-              Full-stack developer. Open to roles in Jeddah and Madinah.
+              {t.footer.tagline}
             </p>
           </div>
 
-          <nav aria-label="Footer" className="flex gap-6 text-sm text-zinc-400">
+          <nav aria-label={t.footer.navLabel} className="flex gap-6 text-sm text-zinc-400">
             {navLinks.map((link) => (
               <a key={link.href} href={link.href} className={linkClass}>
                 {link.label}
@@ -70,10 +71,10 @@ const Footer = () => {
 
         <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-zinc-800/80 pt-6 text-xs text-zinc-600 sm:flex-row sm:items-center">
           <p>
-            © {year} Ammar. Built with React, TypeScript and Tailwind CSS.
+            © {year} {t.firstName}. {t.footer.rights}
           </p>
           <a href="#home" className={`inline-flex items-center gap-1.5 ${linkClass}`}>
-            Back to top
+            {t.footer.backToTop}
             <ArrowUp size={12} aria-hidden="true" />
           </a>
         </div>

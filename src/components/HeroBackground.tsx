@@ -16,7 +16,7 @@ const orbs = [
   },
   {
     className:
-      "right-[-5%] top-[15%] h-[480px] w-[480px] bg-white/[0.04] blur-[110px]",
+      "right-[-5%] top-[15%] h-[480px] w-[480px] bg-white/[0.04] light:bg-emerald-500/10 blur-[110px]",
     animate: {
       x: [0, -35, 25, 0],
       y: [0, -25, 20, 0],
@@ -44,11 +44,11 @@ const HeroBackground = () => {
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
       {/* Radial vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(255,255,255,0.05),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgb(var(--fx)/0.05),transparent_70%)]" />
 
       {/* Mobile: subtle neutral glow */}
       {!isDesktop && (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_85%_32%,rgba(255,255,255,0.05),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_85%_32%,rgb(var(--fx)/0.05),transparent_70%)]" />
       )}
 
       {/* Desktop: animated ambient orbs */}
@@ -74,7 +74,7 @@ const HeroBackground = () => {
         className="absolute inset-0 opacity-20"
         style={{
           backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)",
+            "radial-gradient(circle, rgb(var(--fx)/0.28) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
           maskImage:
             "radial-gradient(ellipse 70% 60% at 50% 45%, black 20%, transparent 75%)",
@@ -127,11 +127,11 @@ const HeroBackground = () => {
 
       {/* Desktop spotlight behind the profile column */}
       {isDesktop && (
-        <div className="absolute left-3/4 top-1/2 hidden h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07)_0%,transparent_65%)] md:block" />
+        <div className="absolute left-3/4 top-1/2 hidden h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--fx)/0.07)_0%,transparent_65%)] md:block" />
       )}
 
       {/* Bottom fade into the next section */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-page to-transparent" />
     </div>
   );
 };

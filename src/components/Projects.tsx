@@ -1,22 +1,20 @@
 import type { ReactNode } from "react";
-import { ArrowUpRight, Bot, Check, Clock, Compass, MessageSquare, Play, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, Bot, Check, Clock, Compass, Mail, MessageSquare, Play, ScanText, type LucideIcon } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useApp } from "@/lib/app-context";
+import Latin from "./Latin";
+import { EMAIL } from "./Contact";
 
 type Project = {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  contribution?: string;
-  highlights: string[];
+  id: "crm-assistant" | "nahj" | "sahih-ai";
   technologies: string[];
   Icon: LucideIcon;
   repository?: string;
   demo?: string;
-  demoNote?: string;
+  talk?: boolean;
   visual: ReactNode;
 };
 
@@ -35,8 +33,8 @@ const Window = ({
   footer: string;
   children: ReactNode;
 }) => (
-  <div className="min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-[#0D0D0D] shadow-2xl shadow-black/40">
-    <div className="flex items-center gap-2 border-b border-zinc-800 bg-[#111111] px-4 py-2.5">
+  <div className="keep-dark min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-panel shadow-2xl shadow-black/40">
+    <div className="flex items-center gap-2 border-b border-zinc-800 bg-panel-2 px-4 py-2.5">
       <Icon size={14} className="shrink-0 text-emerald-400" aria-hidden="true" />
       <span className="truncate font-mono text-xs text-zinc-500">{title}</span>
     </div>
@@ -54,18 +52,20 @@ const Window = ({
 const CRM_DEMO_URL = "https://crm-agent-yuoq.onrender.com/";
 
 // The file lives in public/, so it is served from the site root.
-const CrmScreenshot = () => (
-  <Window title="crm-assistant" Icon={MessageSquare} footer="Screenshot of the CRM Assistant.">
+const CrmScreenshot = () => {
+  const { t } = useApp();
+  return (
+  <Window title="crm-assistant" Icon={MessageSquare} footer={t.projects.crmFooter}>
     <a
       href={CRM_DEMO_URL}
       target="_blank"
       rel="noreferrer"
-      aria-label="Open the live CRM Assistant demo"
+      aria-label={t.projects.crmAria}
       className="group relative block focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-400"
     >
     <img
       src="/Demo.png"
-      alt="Screenshot of the CRM Assistant chat interface"
+      alt={t.projects.crmAlt}
       width={1410}
       height={859}
       loading="lazy"
@@ -73,32 +73,58 @@ const CrmScreenshot = () => (
       className="block h-auto w-full"
     />
       <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-        Open live demo
-        <ArrowUpRight size={15} className="ml-1.5" aria-hidden="true" />
+        {t.projects.openDemo}
+        <ArrowUpRight size={15} className="ms-1.5 rtl:-scale-x-100" aria-hidden="true" />
       </span>
     </a>
   </Window>
-);
+  );
+};
 
 /* ------------------------------------------------------------------ */
 /* Nahj: recorded preview of the company side                          */
 /* ------------------------------------------------------------------ */
 
 // The file lives in public/, so it is served from the site root.
-const NahjVideo = () => (
-  <Window title="nahj-company-side" Icon={Play} footer="Recorded demo of the company side of Nahj.">
+const NahjVideo = () => {
+  const { t } = useApp();
+  return (
+  <Window title="nahj-company-side" Icon={Play} footer={t.projects.nahjFooter}>
     <video
       controls
       playsInline
       preload="metadata"
-      aria-label="Demo of the company side of the Nahj platform"
+      aria-label={t.projects.nahjAria}
       className="aspect-video w-full bg-black"
     >
       <source src="/Nahj_Demo.mp4" type="video/mp4" />
-      Your browser can't play this video.
+      {t.projects.videoFallback}
     </video>
   </Window>
-);
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Sahih AI: screenshot of the platform                                */
+/* ------------------------------------------------------------------ */
+
+// The file lives in public/, so it is served from the site root.
+const SahihScreenshot = () => {
+  const { t } = useApp();
+  return (
+    <Window title="sahih-ai" Icon={ScanText} footer={t.projects.sahihFooter}>
+      <img
+        src="/Saheh.png"
+        alt={t.projects.sahihAlt}
+        width={2476}
+        height={1439}
+        loading="lazy"
+        decoding="async"
+        className="block h-auto w-full"
+      />
+    </Window>
+  );
+};
 
 /* ------------------------------------------------------------------ */
 /* Content                                                             */
@@ -107,39 +133,24 @@ const NahjVideo = () => (
 const projects: Project[] = [
   {
     id: "crm-assistant",
-    name: "AI-Powered CRM Assistant",
-    category: "AI agent",
-    description:
-      "A conversational assistant for managing customers, tasks, and notes. It finds overdue follow-ups, answers questions from stored knowledge with source references, and asks for approval before saving any change.",
-    highlights: [
-      "Conversational customer search with task and note management",
-      "Overdue follow-up detection",
-      "Approval before changes are saved, with conversations and pending approvals kept between sessions",
-    ],
     technologies: ["React", "Python", "FastAPI", "LangGraph", "Gemini", "Chroma", "SQLite"],
     Icon: Bot,
     repository: "https://github.com/Kiyto1/crm-agent",
     demo: CRM_DEMO_URL,
-    demoNote:
-      "Hosted on a free server. If the demo has been idle, the first load can take up to a minute.",
     visual: <CrmScreenshot />,
   },
   {
     id: "nahj",
-    name: "Nahj",
-    category: "Career platform",
-    description:
-      "A career matching platform that connects students and companies, with AI-assisted recommendations informed by RIASEC interest assessments.",
-    contribution:
-      "My contribution: the landing page and the company side of the platform, built full-stack and integrated with the AI and student sides. The demo shows the company side.",
-    highlights: [
-      "Matches students and companies on one platform",
-      "Recommendations informed by RIASEC assessments",
-      "Prompt design for consistent AI output",
-    ],
     technologies: ["React", "Python", "FastAPI", "Supabase", "PostgreSQL"],
     Icon: Compass,
     visual: <NahjVideo />,
+  },
+  {
+    id: "sahih-ai",
+    technologies: ["Python", "Flask", "Azure", "OCR"],
+    Icon: ScanText,
+    talk: true,
+    visual: <SahihScreenshot />,
   },
 ];
 
@@ -148,8 +159,10 @@ const projects: Project[] = [
 /* ------------------------------------------------------------------ */
 
 const ProjectRow = ({ project, flip }: { project: Project; flip: boolean }) => {
-  const { id, name, category, description, contribution, highlights, technologies, Icon, repository, demo, demoNote, visual } =
-    project;
+  const { t } = useApp();
+  const { id, technologies, Icon, repository, demo, talk, visual } = project;
+  const { name, category, description, highlights, demoNote } = t.projects.items[id];
+  const contribution = "contribution" in t.projects.items[id] ? t.projects.items[id].contribution : undefined;
 
   return (
     <article
@@ -171,19 +184,23 @@ const ProjectRow = ({ project, flip }: { project: Project; flip: boolean }) => {
           </h3>
         </div>
 
-        <p className="leading-7 text-zinc-400">{description}</p>
-        {contribution && <p className="text-sm leading-6 text-zinc-500">{contribution}</p>}
+        <p className="leading-7 text-zinc-400"><Latin>{description}</Latin></p>
+        {contribution && (
+          <p className="text-sm leading-6 text-zinc-500">
+            <Latin>{contribution}</Latin>
+          </p>
+        )}
 
         <ul className="space-y-2.5">
           {highlights.map((item) => (
             <li key={item} className="flex items-start gap-3 text-sm leading-6 text-zinc-300">
               <Check size={16} className="mt-1 shrink-0 text-emerald-400" aria-hidden="true" />
-              {item}
+              <span><Latin>{item}</Latin></span>
             </li>
           ))}
         </ul>
 
-        <ul className="flex flex-wrap gap-2" aria-label={`${name} technologies`}>
+        <ul className="flex flex-wrap gap-2" aria-label={`${name} ${t.projects.technologies}`}>
           {technologies.map((tech) => (
             <li
               key={tech}
@@ -199,8 +216,8 @@ const ProjectRow = ({ project, flip }: { project: Project; flip: boolean }) => {
             {demo && (
               <Button asChild className="bg-emerald-500 text-black hover:bg-emerald-400">
                 <a href={demo} target="_blank" rel="noreferrer">
-                  Live demo
-                  <ArrowUpRight size={15} aria-hidden="true" />
+                  {t.projects.liveDemo}
+                  <ArrowUpRight size={15} aria-hidden="true" className="rtl:-scale-x-100" />
                 </a>
               </Button>
             )}
@@ -212,11 +229,20 @@ const ProjectRow = ({ project, flip }: { project: Project; flip: boolean }) => {
               >
                 <a href={repository} target="_blank" rel="noreferrer">
                   <SiGithub size={15} aria-hidden="true" />
-                  View source on GitHub
+                  {t.projects.viewSource}
                 </a>
               </Button>
             )}
           </div>
+        )}
+
+        {talk && EMAIL && (
+          <Button asChild className="bg-white text-black hover:bg-zinc-200">
+            <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(name)}`}>
+              <Mail size={15} aria-hidden="true" />
+              {t.projects.talkAbout}
+            </a>
+          </Button>
         )}
 
         {demo && demoNote && (
@@ -233,6 +259,7 @@ const ProjectRow = ({ project, flip }: { project: Project; flip: boolean }) => {
 };
 
 const Projects = () => {
+  const { t } = useApp();
   return (
     <section
         aria-labelledby="projects-heading"
@@ -243,14 +270,11 @@ const Projects = () => {
           className="mb-16 max-w-2xl scroll-mt-16 space-y-4"
         >
         <Badge variant="outline" className="border-zinc-700 bg-zinc-950 text-zinc-300">
-          Projects
+          {t.projects.badge}
         </Badge>
         <h2 id="projects-heading" className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-          Selected work.
+          {t.projects.heading}
         </h2>
-        <p className="leading-7 text-zinc-400">
-          An AI agent that asks before it acts, and a platform that matches people to careers.
-        </p>
       </div>
 
       <div className="space-y-24">

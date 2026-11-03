@@ -4,6 +4,7 @@ import { ArrowUpRight, Download, Mail } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useApp } from "@/lib/app-context";
 
 export const GITHUB_URL = "https://github.com/Kiyto1";
 export const LINKEDIN_URL =
@@ -50,6 +51,17 @@ const links: ContactLink[] = [
 
 const Contact = () => {
   const reduceMotion = useReducedMotion();
+  const { t } = useApp();
+  // Show a name instead of the raw profile address.
+  const values: Record<string, string> = {
+    LinkedIn: t.name,
+    GitHub: "Kiyto1",
+  };
+  const labels: Record<string, string> = {
+    Email: t.contact.email,
+    LinkedIn: t.contact.linkedin,
+    GitHub: t.contact.github,
+  };
 
   return (
     <section
@@ -70,19 +82,18 @@ const Contact = () => {
               variant="outline"
               className="border-zinc-700 bg-zinc-950 text-zinc-300"
             >
-              Contact
+              {t.contact.badge}
             </Badge>
 
             <h2
               id="contact-heading"
               className="text-3xl font-bold tracking-tight text-white md:text-4xl"
             >
-              Let's work together.
+              {t.contact.heading}
             </h2>
 
             <p className="max-w-md leading-7 text-zinc-400">
-              I'm looking for software developer roles in Jeddah and
-              Madinah. Reach out through any of these.
+              {t.contact.body}
             </p>
 
             {CV_PATH && (
@@ -92,7 +103,7 @@ const Contact = () => {
               >
                 <a href={CV_PATH} download>
                   <Download size={16} aria-hidden="true" />
-                  Download CV
+                  {t.contact.download}
                 </a>
               </Button>
             )}
@@ -105,7 +116,7 @@ const Contact = () => {
                   href={href}
                   target={href.startsWith("mailto:") ? undefined : "_blank"}
                   rel="noreferrer"
-                  className="group flex items-center gap-4 rounded-xl border border-zinc-800 bg-[#101010] p-4 transition-colors hover:border-emerald-500/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+                  className="group flex items-center gap-4 rounded-xl border border-zinc-800 bg-panel-3 p-4 transition-colors hover:border-emerald-500/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-emerald-400">
                     <Icon size={18} aria-hidden="true" />
@@ -113,17 +124,20 @@ const Contact = () => {
 
                   <span className="min-w-0 flex-1">
                     <span className="block text-xs text-zinc-500">
-                      {label}
+                      {labels[label] ?? label}
                     </span>
-                    <span className="block truncate text-sm text-zinc-100">
-                      {value}
+                    <span
+                      dir={label === "Email" ? "ltr" : undefined}
+                      className="block truncate text-start text-sm text-zinc-100 rtl:text-right"
+                    >
+                      {values[label] ?? value}
                     </span>
                   </span>
 
                   <ArrowUpRight
                     size={16}
                     aria-hidden="true"
-                    className="shrink-0 text-zinc-600 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-emerald-400"
+                    className="shrink-0 text-zinc-600 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-emerald-400 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
                   />
                 </a>
               </li>

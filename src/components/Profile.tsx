@@ -4,24 +4,22 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 export const EMAIL = "AmmarHassan.CS@gmail.com";
 import ProfileBackground from "./ProfileBackground";
+import { useApp } from "@/lib/app-context";
+import Latin from "./Latin";
 import type { IconType } from "react-icons";
 import {
   SiReact,
-  SiTypescript,
+  SiJavascript,
+  SiHtml5,
   SiTailwindcss,
   SiNodedotjs,
   SiFastapi,
   SiPython,
-  SiSupabase,
-  SiGithub,
-  SiVercel,
-  SiGooglegemini,
-  SiOpenjdk,
 } from "react-icons/si";
 
 // Define the structure of each skill category.
 type SkillGroup = {
-  title: string;
+  key: "frontend" | "backend";
   icons: { Icon: IconType; color: string }[];
   skills: string[];
 };
@@ -29,41 +27,32 @@ type SkillGroup = {
 // Content used to generate the skill cards.
 const skillGroups: SkillGroup[] = [
   {
-    title: "Frontend",
+    key: "frontend",
     icons: [
       { Icon: SiReact, color: "#61DAFB" },
-      { Icon: SiTypescript, color: "#3178C6" },
+      { Icon: SiJavascript, color: "#F7DF1E" },
+      { Icon: SiHtml5, color: "#E34F26" },
       { Icon: SiTailwindcss, color: "#38BDF8" },
     ],
-    skills: ["React", "TypeScript", "Tailwind CSS", "shadcn/ui", "Vite"],
+    skills: ["React", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Responsive Design"],
   },
   {
-    title: "Backend",
+    key: "backend",
     icons: [
       { Icon: SiNodedotjs, color: "#5FA04E" },
       { Icon: SiFastapi, color: "#009688" },
       { Icon: SiPython, color: "#FFD43B" },
-      { Icon: SiOpenjdk, color: "#ED8B00" },
     ],
-    skills: ["Node.js", "FastAPI", "Python", "Java", "REST APIs"],
-  },
-  {
-    title: "Database & Tools",
-    icons: [
-      { Icon: SiSupabase, color: "#3ECF8E" },
-      { Icon: SiGithub, color: "#FFFFFF" },
-      { Icon: SiVercel, color: "#FFFFFF" },
+    skills: [
+      "Python",
+      "FastAPI",
+      "Node.js",
+      "Supabase",
+      "PostgreSQL",
+      "SQLite",
+      "LangGraph",
+      "RAG (Chroma)",
     ],
-    skills: ["Supabase", "SQL", "Git", "GitHub", "Vercel"],
-  },
-  {
-    title: "AI & Integration",
-    icons: [
-      { Icon: SiGooglegemini, color: "#8E75B2" },
-      { Icon: SiPython, color: "#FFD43B" },
-      { Icon: SiFastapi, color: "#009688" },
-    ],
-    skills: ["AI APIs", "RAG", "LangGraph", "OCR", "Automation", "API Integration"],
   },
 ];
 
@@ -96,13 +85,13 @@ const developer = {
   name: "Ammar Alsaedi",
   role: "Full-Stack Developer",
   education: "Computer Science, Islamic University of Madinah",
-  stack: ["React", "TypeScript", "Python", "FastAPI"],
+  stack: ["JavaScript", "React", "Node.js", "Python"],
   location: ["Jeddah", "Madinah"],
   status: "Open to work",
-${EMAIL ? `  contact: "${EMAIL}",\n` : ""}} as const;`;
+${EMAIL ? `  contact: "${EMAIL}",\n` : ""}};`;
 
 // Small highlighter: comments, strings, keywords and function calls.
-const pattern = /(\/\/.*)|("[^"]*")|\b(const|as)\b|\b([A-Za-z_]\w*)(?=\()/g;
+const pattern = /(\/\/.*)|("[^"]*")|\b(const)\b|\b([A-Za-z_]\w*)(?=\()/g;
 
 const highlight = (line: string): Token[] => {
   const tokens: Token[] = [];
@@ -128,11 +117,12 @@ const CodeCard = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-[#0D0D0D] shadow-xl shadow-black/30"
+      dir="ltr"
+      className="keep-dark min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-panel shadow-xl shadow-black/30"
     >
-      <div className="flex items-center gap-2 border-b border-zinc-800 bg-[#111111] px-4 py-2.5">
+      <div className="flex items-center gap-2 border-b border-zinc-800 bg-panel-2 px-4 py-2.5">
         <FileCode size={14} className="shrink-0 text-emerald-400" aria-hidden="true" />
-        <span className="truncate font-mono text-xs text-zinc-500">developer.ts</span>
+        <span className="truncate font-mono text-xs text-zinc-500">developer.js</span>
       </div>
 
       {/* Preserve code spacing and allow horizontal scrolling. */}
@@ -152,7 +142,7 @@ const CodeCard = () => {
                   </span>
                 ))}
                 {isStatus && (
-                  <span className="relative ml-3 flex h-2 w-2" aria-hidden="true">
+                  <span className="relative ms-3 flex h-2 w-2" aria-hidden="true">
                     <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                   </span>
@@ -167,6 +157,7 @@ const CodeCard = () => {
 };
 
 const Profile = () => {
+  const { t } = useApp();
   return (
     <section id="about" className="relative overflow-hidden px-6 py-24">
       <ProfileBackground />
@@ -175,18 +166,18 @@ const Profile = () => {
       <div className="grid gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-start">
         {/* About text and animated underline. */}
         <motion.div
-          initial={{ opacity: 0, x: -16 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5 }}
           className="min-w-0 space-y-6"
         >
           <Badge variant="outline" className="border-zinc-700 bg-zinc-950 text-zinc-300">
-            About Me
+            {t.about.badge}
           </Badge>
 
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-            Clean software for real problems.
+            {t.about.heading}
           </h2>
 
           <motion.div
@@ -194,23 +185,19 @@ const Profile = () => {
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="h-px w-24 origin-left bg-gradient-to-r from-zinc-500 to-transparent"
+            className="h-px w-24 origin-left bg-gradient-to-r from-zinc-500 to-transparent rtl:origin-right rtl:bg-gradient-to-l"
           />
 
           <p className="leading-7 text-zinc-400">
-            I am a Computer Science graduate with a strong interest in
-            full-stack development and artificial intelligence. I enjoy
-            building practical applications, turning ideas into usable
-            interfaces, and working with modern technologies such as React,
-            TypeScript, Node.js, Python, Java and FastAPI.
+            <Latin>{t.about.body}</Latin>
           </p>
         </motion.div>
 
         <div className="min-w-0 space-y-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-lg font-semibold text-zinc-200">Core stack</h3>
+            <h3 className="text-lg font-semibold text-zinc-200">{t.about.coreStack}</h3>
             <span className="text-xs uppercase tracking-[0.16em] text-zinc-500">
-              Frontend · Backend · Tools · AI
+              {t.about.coreStackSub}
             </span>
           </div>
 
@@ -223,11 +210,11 @@ const Profile = () => {
             className="grid grid-cols-1 gap-4 xl:grid-cols-2"
           >
             {skillGroups.map((group) => (
-              <motion.div key={group.title} variants={fadeUp} whileHover={{ y: -4 }} transition={{ duration: 0.25 }} className="min-w-0">
-                <Card className="h-full min-w-0 border-zinc-800 bg-[#111111] text-white transition-colors duration-300 hover:border-zinc-600">
+              <motion.div key={group.key} variants={fadeUp} whileHover={{ y: -4 }} transition={{ duration: 0.25 }} className="min-w-0">
+                <Card className="h-full min-w-0 border-zinc-800 bg-panel-2 text-white transition-colors duration-300 hover:border-zinc-600">
                   <CardContent className="min-w-0 space-y-4 p-5">
                     <div className="flex items-center justify-between gap-3">
-                      <h4 className="truncate text-sm font-semibold text-zinc-200">{group.title}</h4>
+                      <h4 className="min-w-0 text-sm font-semibold text-zinc-200">{t.about.groups[group.key]}</h4>
                       <div className="flex shrink-0 gap-1.5">
                         {group.icons.map(({ Icon, color }, i) => (
                           <motion.div

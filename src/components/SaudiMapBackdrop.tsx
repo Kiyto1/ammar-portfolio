@@ -1,3 +1,4 @@
+import { useApp } from "@/lib/app-context";
 import { motion } from "motion/react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -10,14 +11,14 @@ const mapMask = {
 
 const cities = [
   {
-    name: "Madinah",
+    id: "madinah" as const,
     desktop: { left: "23%", top: "50%" },
     phone: { left: "25%", top: "50%" },
     labelClass: "bottom-full left-1/2 mb-1.5 -translate-x-1/2",
     delay: 0,
   },
   {
-    name: "Jeddah",
+    id: "jeddah" as const,
     desktop: { left: "28%", top: "62%" },
     phone: { left: "28%", top: "64%" },
     labelClass: "top-full left-1/2 mt-1.5 -translate-x-1/2",
@@ -32,7 +33,9 @@ const CityMarker = ({
   city: (typeof cities)[number];
   compact: boolean;
 }) => {
-  const { name, labelClass, delay } = city;
+  const { t } = useApp();
+  const name = t.cities[city.id];
+  const { labelClass, delay } = city;
   const { left, top } = compact ? city.phone : city.desktop;
 
   // Mobile: dots only.
@@ -75,7 +78,7 @@ const CityMarker = ({
       <span className="relative block h-2 w-2 rounded-full border border-emerald-300/70 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.65)]" />
 
       <span
-        className={`absolute hidden whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-400/75 md:block ${labelClass}`}
+        className={`absolute hidden whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-400/75 rtl:text-xs rtl:normal-case md:block ${labelClass}`}
       >
         {name}
       </span>
@@ -84,7 +87,9 @@ const CityMarker = ({
 };
 
 const SaudiMapBackdrop = () => {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const { theme } = useApp();
+  const tone = theme === "light" ? "brightness(0)" : "brightness(0) invert(1)";
 
   return (
     <motion.div
@@ -94,32 +99,32 @@ const SaudiMapBackdrop = () => {
       className="pointer-events-none absolute inset-0"
       aria-hidden
     >
+      {/* In Arabic the map follows the page content width, so the city markers stay in the gap between the photo and the text. */}
+      <div className="absolute inset-y-0 left-1/2 w-full -translate-x-1/2 rtl:w-[min(72rem,calc(100%-3rem))]">
       <div
         className={
           isDesktop
-            ? "absolute left-[56%] top-1/2 h-[min(82vh,760px)] w-[min(82vh,760px)] -translate-x-1/2 -translate-y-[48%]"
+            ? "absolute left-[56%] rtl:left-[62%] top-1/2 h-[min(82vh,760px)] w-[min(82vh,760px)] -translate-x-1/2 -translate-y-[48%]"
             : "absolute inset-x-0 top-[10%] mx-auto h-[min(78vw,340px)] w-[min(78vw,340px)]"
         }
       >
         <img
           src="/sa.svg"
           alt=""
-          className="absolute inset-0 h-full w-full object-contain opacity-[0.10] md:opacity-[0.28]"
+          className="absolute inset-0 h-full w-full object-contain opacity-[0.10] md:opacity-[0.28] light:opacity-[0.07] md:light:opacity-[0.12]"
           style={{
             ...mapMask,
             filter: isDesktop
-              ? "brightness(0) invert(1) drop-shadow(0 0 24px rgba(16,185,129,0.18))"
-              : "brightness(0) invert(1)",
+              ? `${tone} drop-shadow(0 0 24px rgba(16,185,129,0.18))`
+              : tone,
           }}
         />
 
-        {cities.map((city) => (
-          <CityMarker
-            key={city.name}
-            city={city}
-            compact={!isDesktop}
-          />
-        ))}
+        {isDesktop &&
+          cities.map((city) => (
+            <CityMarker key={city.id} city={city} compact={false} />
+          ))}
+      </div>
       </div>
     </motion.div>
   );

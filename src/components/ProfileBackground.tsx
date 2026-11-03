@@ -60,8 +60,14 @@ const ProfileBackground = () => {
 
       // Draw on every third animation callback.
       if (frame % 3 === 0) {
-        ctx.fillStyle = "rgba(10, 10, 10, 0.12)";
+        const light = document.documentElement.classList.contains("light");
+
+        // Fade old characters out. destination-out works on a transparent
+        // canvas, so it looks right on both the light and dark page.
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.12)";
         ctx.fillRect(0, 0, width, height);
+        ctx.globalCompositeOperation = "source-over";
         ctx.font = `${fontSize}px monospace`;
 
         for (let i = 0; i < columns; i++) {
@@ -71,8 +77,12 @@ const ProfileBackground = () => {
 
           ctx.fillStyle =
             Math.random() < 0.06
-              ? "rgba(52,211,153,0.35)"
-              : "rgba(255,255,255,0.14)";
+              ? light
+                ? "rgba(5,150,105,0.55)"
+                : "rgba(52,211,153,0.6)"
+              : light
+              ? "rgba(10,10,10,0.38)"
+              : "rgba(255,255,255,0.35)";
 
           ctx.fillText(char, x, y);
 
