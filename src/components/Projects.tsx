@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowUpRight, Bot, Check, Clock, Compass, Mail, MessageSquare, Play, ScanText, type LucideIcon } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { Badge } from "@/components/ui/badge";
@@ -46,38 +46,45 @@ const Window = ({
 );
 
 /* ------------------------------------------------------------------ */
-/* CRM Assistant: screenshot of the real app, linked to the live demo  */
+/* CRM Assistant: screenshot of the real app                           */
 /* ------------------------------------------------------------------ */
 
-const CRM_DEMO_URL = "https://crm-agent-yuoq.onrender.com/";
+const CRM_SHOTS = ["overview", "customers", "deals", "assistant"] as const;
 
-// The file lives in public/, so it is served from the site root.
+// The files live in public/, so they are served from the site root.
 const CrmScreenshot = () => {
   const { t } = useApp();
+  const [active, setActive] = useState<(typeof CRM_SHOTS)[number]>("overview");
   return (
-  <Window title="crm-assistant" Icon={MessageSquare} footer={t.projects.crmFooter}>
-    <a
-      href={CRM_DEMO_URL}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={t.projects.crmAria}
-      className="group relative block focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-400"
-    >
-    <img
-      src="/Demo.png"
-      alt={t.projects.crmAlt}
-      width={1410}
-      height={859}
-      loading="lazy"
-      decoding="async"
-      className="block h-auto w-full"
-    />
-      <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-        {t.projects.openDemo}
-        <ArrowUpRight size={15} className="ms-1.5 rtl:-scale-x-100" aria-hidden="true" />
-      </span>
-    </a>
-  </Window>
+    <Window title="crm-assistant" Icon={MessageSquare} footer={t.projects.crmFooter}>
+      <div role="tablist" className="flex gap-1 border-b border-zinc-800 bg-zinc-950 px-2 py-1.5">
+        {CRM_SHOTS.map((shot) => (
+          <button
+            key={shot}
+            type="button"
+            role="tab"
+            aria-selected={active === shot}
+            onClick={() => setActive(shot)}
+            className={cn(
+              "rounded-md px-3 py-1 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-emerald-400",
+              active === shot ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-white",
+            )}
+          >
+            {t.projects.crmShots[shot]}
+          </button>
+        ))}
+      </div>
+      <img
+        key={active}
+        src={`/crm-${active}.png`}
+        alt={`${t.projects.crmAlt}: ${t.projects.crmShots[active]}`}
+        width={1410}
+        height={859}
+        loading="lazy"
+        decoding="async"
+        className="block h-auto w-full"
+      />
+    </Window>
   );
 };
 
@@ -136,7 +143,7 @@ const projects: Project[] = [
     technologies: ["React", "Python", "FastAPI", "LangGraph", "Gemini", "Chroma", "SQLite"],
     Icon: Bot,
     repository: "https://github.com/Kiyto1/crm-agent",
-    demo: CRM_DEMO_URL,
+    talk: true,
     visual: <CrmScreenshot />,
   },
   {

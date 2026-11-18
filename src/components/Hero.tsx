@@ -1,5 +1,5 @@
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { Mail } from "lucide-react";
+import { Download, Mail } from "lucide-react";
 import { motion } from "motion/react";
 import { TypeAnimation } from "react-type-animation";
 import { Button } from "@/components/ui/button";
@@ -107,6 +107,16 @@ const Hero = () => {
               className="border-zinc-700 bg-zinc-950/40 text-white hover:bg-zinc-900 hover:text-white md:backdrop-blur"
             >
               <a href="#contact">{t.hero.contactMe}</a>
+            </Button>
+
+            <Button
+              asChild
+              className="bg-emerald-500 text-black hover:bg-emerald-400"
+            >
+              <a href={CV_PATH} download>
+                <Download size={16} aria-hidden="true" />
+                {t.contact.download}
+              </a>
             </Button>
           </div>
         </motion.div>

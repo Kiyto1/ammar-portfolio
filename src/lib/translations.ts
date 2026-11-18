@@ -60,9 +60,9 @@ const en = {
     viewSource: "View source on GitHub",
     technologies: "technologies",
     openDemo: "Open live demo",
-    crmFooter: "Screenshot of the CRM Assistant.",
-    crmAlt: "Screenshot of the CRM Assistant chat interface",
-    crmAria: "Open the live CRM Assistant demo",
+    crmFooter: "Screenshots of the CRM Assistant.",
+    crmAlt: "Screenshot of the CRM Assistant",
+    crmShots: { overview: "Overview", customers: "Customers", deals: "Deals", assistant: "Assistant" },
     nahjFooter: "Recorded demo of the company side of Nahj.",
     nahjAria: "Demo of the company side of the Nahj platform",
     sahihFooter: "Screenshot of the Sahih AI platform.",
@@ -79,8 +79,6 @@ const en = {
           "Overdue follow-up detection",
           "Approval before changes are saved, with conversations and pending approvals kept between sessions",
         ],
-        demoNote:
-          "Hosted on a free server. If the demo has been idle, the first load can take up to a minute.",
       } as ProjectText,
       nahj: {
         name: "Nahj",
@@ -182,9 +180,9 @@ const ar: Dict = {
     viewSource: "استعرض الكود المصدري",
     technologies: "التقنيات المستخدمة",
     openDemo: "افتح النسخة التجريبية",
-    crmFooter: "واجهة مساعد إدارة علاقات العملاء.",
-    crmAlt: "لقطة شاشة لواجهة المحادثة في مساعد إدارة علاقات العملاء",
-    crmAria: "افتح النسخة التجريبية من مساعد إدارة علاقات العملاء",
+    crmFooter: "لقطات من مساعد إدارة علاقات العملاء.",
+    crmAlt: "لقطة شاشة لمساعد إدارة علاقات العملاء",
+    crmShots: { overview: "نظرة عامة", customers: "العملاء", deals: "الصفقات", assistant: "المساعد" },
     nahjFooter: "عرض توضيحي لواجهة الشركات في منصة نهج.",
     nahjAria: "فيديو يستعرض واجهة الشركات في منصة نهج",
     sahihFooter: "لقطة شاشة من منصة صحح.",
@@ -201,8 +199,6 @@ const ar: Dict = {
           "تحديد المتابعات المتأخرة لتسهيل متابعتها",
           "مراجعة التغييرات والموافقة عليها قبل حفظها، مع إمكانية استئناف المحادثات وطلبات الموافقة المعلّقة",
         ],
-        demoNote:
-          "تعمل النسخة التجريبية على استضافة مجانية؛ لذا قد يستغرق تشغيلها نحو دقيقة عند زيارتها بعد فترة من عدم الاستخدام.",
       },
       nahj: {
         name: "نهج",
